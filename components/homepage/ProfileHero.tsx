@@ -80,7 +80,14 @@ export function ProfileHero({ profile }: Props) {
         transition={{ delay: 0.4 }}
         className="mt-4"
       >
-        <SocialLinks profile={profile} />
+        <div className="flex items-center gap-2">
+          <SocialLinks profile={profile} />
+          <a href="https://duliduli-website.com" target="_blank" rel="noopener noreferrer"
+            className="w-10 h-10 rounded-2xl bg-warm-700 hover:bg-warm-800 flex items-center justify-center text-white shadow-soft transition-all"
+            aria-label="官網">
+            🌐
+          </a>
+        </div>
       </motion.div>
 
       {/* Decorative divider */}
