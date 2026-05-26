@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { VideoCard } from './VideoCard'
 import type { Video } from '@/lib/types'
 
-const CATEGORIES = ['全部', '感官盆', '磁力片', '生活用品', '益智玩具', '戶外探索', '手作DIY', '繪本故事']
+const CATEGORIES = ['全部', '感官盆', '磁力片', '生活用品', '益智玩具']
 
 export function VideosSection({ videos }: { videos: Video[] }) {
   const [active, setActive] = useState('全部')
