@@ -77,6 +77,16 @@ export default async function HomePage() {
           </div>
         )}
 
+        {/* Featured Videos */}
+        {videos.length > 0 && (
+          <section className="mt-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="section-title">跟著嘟力玩</h2>
+            </div>
+              <VideosSection videos={videos} />
+          </section>
+        )}
+
         {/* Group Buy Products */}
         {products.length > 0 && (() => {
           const now = new Date()
@@ -136,16 +146,6 @@ export default async function HomePage() {
             </div>
           )
         })()}
-
-        {/* Featured Videos */}
-        {videos.length > 0 && (
-          <section className="mt-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="section-title">跟著嘟力玩</h2>
-            </div>
-              <VideosSection videos={videos} />
-          </section>
-        )}
 
         {/* Links */}
         {links.length > 0 && (
