@@ -23,7 +23,7 @@ export function VideosSection({ videos }: { videos: Video[] }) {
           </button>
         ))}
       </div>
-      <div className="flex gap-3 overflow-x-auto pb-2">
+      <div className="grid grid-cols-2 gap-3">
         {filtered.map((video, i) => (
           <VideoCard key={video.id} video={video} index={i} />
         ))}
