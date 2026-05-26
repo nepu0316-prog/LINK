@@ -32,11 +32,11 @@ export function CountdownTimer({ deadline }: Props) {
     { label: '秒', value: remaining.seconds },
   ]
 
-  const isUrgent = remaining.totalSeconds < 86400 // < 1 day
+  
 
   return (
     <div className={`flex items-center gap-1 text-xs font-medium ${isUrgent ? 'text-coral-500' : 'text-warm-500 dark:text-warm-300'}`}>
-      {isUrgent && <span className="animate-pulse">⏰</span>}
+      
       <span>倒數</span>
       {units.filter(u => u.value > 0 || (u.label === '分' || u.label === '秒')).slice(0, 3).map(({ label, value }) => (
         <span key={label} className={`inline-flex items-center gap-0.5 ${isUrgent ? 'bg-white/20 text-white' : 'bg-white/20 text-white'} px-1.5 py-0.5 rounded`}>
