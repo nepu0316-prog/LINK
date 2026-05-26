@@ -13,7 +13,7 @@ import toast from 'react-hot-toast'
 import type { Video } from '@/lib/types'
 
 type Props = { initialVideos: Video[] }
-type FormData = Omit<Video, 'id' | 'click_count' | 'created_at' | 'updated_at'>
+type FormData = Omit<Video, 'id' | 'click_count' | 'created_at' | 'updated_at'> & { category?: string }
 
 const emptyForm: FormData = {
   title: '',
