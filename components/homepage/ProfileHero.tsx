@@ -23,7 +23,7 @@ export function ProfileHero({ profile }: Props) {
       >
         <div
           className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden ring-4 shadow-glow"
-          style={{ ringColor: profile.brand_color }}
+          style={{ "--tw-ring-color": profile.brand_color } as React.CSSProperties}
         >
           {profile.avatar_url ? (
             <Image
