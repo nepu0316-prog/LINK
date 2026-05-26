@@ -57,6 +57,7 @@ export function ProductsClient({ initialProducts }: Props) {
       button_text: product.button_text,
       price: product.price || '',
       original_price: product.original_price || '',
+      start_date: (product as any).start_date || null,
       deadline: product.deadline,
       is_pinned: product.is_pinned,
       is_published: product.is_published,
