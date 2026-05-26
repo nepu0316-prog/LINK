@@ -46,7 +46,7 @@ export function ProductCard({ product, onClickTrack, index = 0 }: Props) {
         )}
         {expired && (
           <div className="absolute inset-0 bg-warm-800/40 flex items-center justify-center">
-            <span className="badge bg-warm-800 text-white">已結束</span>
+            <a href={profile?.instagram_url || '#'} target="_blank" rel="noopener noreferrer" className="badge bg-warm-800 text-white hover:bg-warm-700 transition-colors">已結團（私訊我）</a>
           </div>
         )}
       </div>
