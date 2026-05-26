@@ -69,7 +69,7 @@ export function ProfileHero({ profile }: Props) {
           transition={{ delay: 0.3 }}
           className="mt-2 text-sm text-warm-500 dark:text-warm-300 max-w-xs leading-relaxed"
         >
-          {profile.bio}
+          {profile.bio?.split("\n").map((line, i) => <span key={i}>{line}<br /></span>)}
         </motion.p>
       )}
 
