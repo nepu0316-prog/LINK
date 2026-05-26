@@ -23,6 +23,7 @@ const emptyForm: FormData = {
   button_text: '前往團購',
   price: '',
   original_price: '',
+  start_date: null,
   deadline: null,
   is_pinned: false,
   is_published: true,
