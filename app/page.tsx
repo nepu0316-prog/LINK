@@ -78,24 +78,64 @@ export default async function HomePage() {
         )}
 
         {/* Group Buy Products */}
-        {products.length > 0 && (
-          <section className="mt-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="section-title">
-                <span className="text-xl"></span>
-                最新團購
-              </h2>
-              <span className="text-xs text-warm-400 dark:text-warm-400">{products.length} 個商品</span>
+        {products.length > 0 && (() => {
+          const now = new Date()
+          const upcoming = products.filter(p => (p as any).start_date && new Date((p as any).start_date) > now)
+          const active = products.filter(p => {
+            const started = !(p as any).start_date || new Date((p as any).start_date) <= now
+            const notExpired = !p.deadline || new Date(p.deadline) > now
+            return started && notExpired && p.is_published
+          })
+          const expired = products.filter(p => p.deadline && new Date(p.deadline) <= now)
+          return (
+            <div className="space-y-6 mt-8">
+              {upcoming.length > 0 && (
+                <section>
+                  <h2 className="section-title mb-3">即將開團</h2>
+                  <div className="space-y-2">
+                    {upcoming.map(p => {
+                      const d = new Date((p as any).start_date)
+                      const diff = Math.ceil((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+                      return (
+                        <div key={p.id} className="flex items-center justify-between bg-white dark:bg-warm-800 rounded-xl px-4 py-3 shadow-soft">
+                          <p className="font-medium text-sm text-warm-800 dark:text-cream-100">{p.title}</p>
+                          <span className="badge bg-sage-100 text-sage-600 text-xs whitespace-nowrap">還有 {diff} 天</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </section>
+              )}
+              {active.length > 0 && (
+                <section>
+                  <div className="flex items-center justify-between mb-3">
+                    <h2 className="section-title">現正開團</h2>
+                    <span className="text-xs text-warm-400">{active.length} 個商品</span>
+                  </div>
+                  <div className="grid grid-cols-2 items-stretch gap-3">
+                    {active.map((product, i) => (
+                      <ClickTracker key={product.id} itemType="product" itemId={product.id}>
+                        <ProductCard product={product} index={i} />
+                      </ClickTracker>
+                    ))}
+                  </div>
+                </section>
+              )}
+              {expired.length > 0 && (
+                <section>
+                  <h2 className="section-title mb-3">已結團</h2>
+                  <div className="grid grid-cols-2 items-stretch gap-3 opacity-70">
+                    {expired.map((product, i) => (
+                      <ClickTracker key={product.id} itemType="product" itemId={product.id}>
+                        <ProductCard product={product} index={i} />
+                      </ClickTracker>
+                    ))}
+                  </div>
+                </section>
+              )}
             </div>
-            <div className="grid grid-cols-2 items-stretch gap-3">
-              {products.map((product, i) => (
-                <ClickTracker key={product.id} itemType="product" itemId={product.id}>
-                  <ProductCard product={product} index={i} />
-                </ClickTracker>
-              ))}
-            </div>
-          </section>
-        )}
+          )
+        })()}
 
         {/* Featured Videos */}
         {videos.length > 0 && (
