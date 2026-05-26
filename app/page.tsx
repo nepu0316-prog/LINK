@@ -34,7 +34,7 @@ export default async function HomePage() {
   const defaultProfile: Profile = {
     id: '',
     name: '親子小日子',
-    bio: '分享親子生活 × 溫暖插畫 × 精選好物 🌿',
+    bio: '分享親子生活 × 溫暖插畫 × 精選好物 ',
     avatar_url: null,
     instagram_url: null,
     threads_url: null,
@@ -49,9 +49,9 @@ export default async function HomePage() {
   const activeProfile = profile || defaultProfile
 
   return (
-    <div className="min-h-screen bg-dots" style={{ backgroundSize: '24px 24px' }}>
+    <div className="min-h-screen bg-gray-50" style={{ backgroundSize: '24px 24px' }}>
       {/* Warm background gradient */}
-      <div className="fixed inset-0 bg-warm-gradient opacity-80 pointer-events-none" />
+      <div className="fixed inset-0 bg-gray-50 opacity-80 pointer-events-none" />
       
       {/* 浮動 Banner */}
       {banners.length > 0 && banners[0].image_url && (
@@ -82,7 +82,7 @@ export default async function HomePage() {
           <section className="mt-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="section-title">
-                <span className="text-xl">🛍️</span>
+                <span className="text-xl"></span>
                 最新團購
               </h2>
               <span className="text-xs text-warm-400 dark:text-warm-400">{products.length} 個商品</span>
