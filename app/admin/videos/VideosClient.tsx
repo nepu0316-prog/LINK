@@ -13,9 +13,9 @@ import toast from 'react-hot-toast'
 import type { Video } from '@/lib/types'
 
 type Props = { initialVideos: Video[] }
-type FormData = Omit<Video, 'id' | 'click_count' | 'created_at' | 'updated_at'> & { category?: string }
+type VideoFormData = Omit<Video, 'id' | 'click_count' | 'created_at' | 'updated_at'> & { category?: string }
 
-const emptyForm: FormData = {
+const emptyForm: VideoFormData = {
   title: '',
   description: '',
   thumbnail_url: null,
@@ -30,7 +30,7 @@ export function VideosClient({ initialVideos }: Props) {
   const [videos, setVideos] = useState(initialVideos)
   const [modalOpen, setModalOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [form, setForm] = useState<FormData>(emptyForm)
+  const [form, setForm] = useState<VideoFormData>(emptyForm)
   const [saving, setSaving] = useState(false)
 
   const supabase = createClient()
