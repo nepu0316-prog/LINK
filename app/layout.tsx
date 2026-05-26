@@ -3,7 +3,7 @@ import './globals.css'
 import { Toaster } from 'react-hot-toast'
 import Script from 'next/script'
 
-const siteName = process.env.NEXT_PUBLIC_SITE_NAME || '親子小日子'
+const siteName = process.env.NEXT_PUBLIC_SITE_NAME || '嘟力日記'
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yourdomain.com'
 const gaId = process.env.NEXT_PUBLIC_GA_ID
 

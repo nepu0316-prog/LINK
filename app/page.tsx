@@ -33,7 +33,7 @@ export default async function HomePage() {
 
   const defaultProfile: Profile = {
     id: '',
-    name: '親子小日子',
+    name: '嘟力日記',
     bio: '分享親子生活 × 溫暖插畫 × 精選好物 ',
     avatar_url: null,
     instagram_url: null,

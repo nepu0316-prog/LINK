@@ -43,7 +43,7 @@ export function AdminNav() {
         <Link href="/" className="flex items-center gap-2 group" target="_blank">
           <span className="text-2xl">🌿</span>
           <div>
-            <p className="font-bold text-warm-800 dark:text-cream-100 text-sm">親子小日子</p>
+            <p className="font-bold text-warm-800 dark:text-cream-100 text-sm">嘟力日記</p>
             <p className="text-[10px] text-warm-400 flex items-center gap-1">
               管理後台 <ExternalLink className="w-2.5 h-2.5" />
             </p>

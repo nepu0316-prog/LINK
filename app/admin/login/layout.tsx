@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: '後台登入 | 親子小日子',
+  title: '後台登入 | 嘟力日記',
   robots: { index: false, follow: false },
 }
 

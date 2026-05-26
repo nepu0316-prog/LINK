@@ -3,7 +3,7 @@ import { headers } from 'next/headers'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: '管理後台 | 親子小日子',
+  title: '管理後台 | 嘟力日記',
   robots: { index: false, follow: false },
 }
 

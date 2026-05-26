@@ -46,7 +46,7 @@ export default function LoginPage() {
           >
             🌿
           </motion.div>
-          <h1 className="text-2xl font-bold text-warm-800 font-display">親子小日子</h1>
+          <h1 className="text-2xl font-bold text-warm-800 font-display">嘟力日記</h1>
           <p className="text-sm text-warm-500 mt-1">管理後台登入</p>
         </div>
 
