@@ -24,7 +24,6 @@ const emptyForm: FormData = {
   price: '',
   original_price: '',
   start_date: null,
-  start_date: null,
   deadline: null,
   is_pinned: false,
   is_published: true,
