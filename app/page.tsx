@@ -87,7 +87,7 @@ export default async function HomePage() {
               </h2>
               <span className="text-xs text-warm-400 dark:text-warm-400">{products.length} 個商品</span>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 items-stretch gap-3">
               {products.map((product, i) => (
                 <ClickTracker key={product.id} itemType="product" itemId={product.id}>
                   <ProductCard product={product} index={i} />

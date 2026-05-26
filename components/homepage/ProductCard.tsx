@@ -23,7 +23,7 @@ export function ProductCard({ product, onClickTrack, index = 0 }: Props) {
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay: index * 0.08 }}
       whileHover={{ y: -4 }}
-      className={`card-soft overflow-hidden ${expired ? 'opacity-70' : ''}`}
+      className={`card-soft overflow-hidden flex flex-col ${expired ? 'opacity-70' : ''}`}
     >
       {/* Thumbnail */}
       <div className="relative aspect-square bg-cream-100 dark:bg-warm-700">
@@ -52,7 +52,7 @@ export function ProductCard({ product, onClickTrack, index = 0 }: Props) {
       </div>
 
       {/* Content */}
-      <div className="p-4">
+      <div className="p-4 flex flex-col flex-1">
         <h3 className="font-bold text-warm-800 dark:text-cream-100 text-sm leading-snug line-clamp-2">
           {product.title}
         </h3>
@@ -98,7 +98,7 @@ export function ProductCard({ product, onClickTrack, index = 0 }: Props) {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => onClickTrack?.(product.id)}
-            className="mt-3 w-full btn-primary text-xs py-2"
+            className="mt-auto pt-3 w-full btn-primary text-xs py-2"
             style={{ display: 'flex' }}
           >
             <ExternalLink className="w-3.5 h-3.5" />
