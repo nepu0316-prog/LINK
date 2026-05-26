@@ -19,7 +19,7 @@ export function CountdownTimer({ deadline }: Props) {
 
   if (!remaining) {
     return (
-      <span className="badge bg-warm-100 text-warm-500 dark:bg-warm-700 dark:text-warm-300">
+      <span className="text-white text-xs">
         已結束
       </span>
     )
@@ -39,7 +39,7 @@ export function CountdownTimer({ deadline }: Props) {
       {isUrgent && <span className="animate-pulse">⏰</span>}
       <span>倒數</span>
       {units.filter(u => u.value > 0 || (u.label === '分' || u.label === '秒')).slice(0, 3).map(({ label, value }) => (
-        <span key={label} className={`inline-flex items-center gap-0.5 ${isUrgent ? 'bg-white/20 text-white' : 'bg-white/20 text-white'} px-1.5 py-0.5 rounded-lg`}>
+        <span key={label} className={`inline-flex items-center gap-0.5 ${isUrgent ? 'bg-white/20 text-white' : 'bg-white/20 text-white'} px-1.5 py-0.5 rounded`}>
           <span className="tabular-nums font-bold">{String(value).padStart(2, '0')}</span>
           <span className="opacity-70">{label}</span>
         </span>
