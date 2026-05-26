@@ -26,7 +26,7 @@ export function ProductCard({ product, onClickTrack, index = 0 }: Props) {
       className={`card-soft overflow-hidden ${expired ? 'opacity-70' : ''}`}
     >
       {/* Thumbnail */}
-      <div className="relative aspect-[4/3] bg-cream-100 dark:bg-warm-700">
+      <div className="relative aspect-square bg-cream-100 dark:bg-warm-700">
         {product.thumbnail_url ? (
           <Image
             src={product.thumbnail_url}
