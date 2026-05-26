@@ -35,11 +35,11 @@ export function CountdownTimer({ deadline }: Props) {
   
 
   return (
-    <div className={`flex items-center gap-1 text-xs font-medium ${isUrgent ? 'text-coral-500' : 'text-warm-500 dark:text-warm-300'}`}>
+    <div className={"flex items-center gap-1 text-xs font-black text-white"}>
       
       <span>倒數</span>
       {units.filter(u => u.value > 0 || (u.label === '分' || u.label === '秒')).slice(0, 3).map(({ label, value }) => (
-        <span key={label} className={`inline-flex items-center gap-0.5 ${isUrgent ? 'bg-white/20 text-white' : 'bg-white/20 text-white'} px-1.5 py-0.5 rounded`}>
+        <span key={label} className={`inline-flex items-center gap-0.5 bg-white/20 text-white px-1.5 py-0.5 rounded`}>
           <span className="tabular-nums font-bold">{String(value).padStart(2, '0')}</span>
           <span className="opacity-70">{label}</span>
         </span>
