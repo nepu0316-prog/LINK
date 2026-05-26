@@ -49,6 +49,11 @@ export function ProductCard({ product, onClickTrack, index = 0 }: Props) {
             <a href="https://www.instagram.com/duliduli2023/" target="_blank" rel="noopener noreferrer" className="badge bg-warm-800 text-white hover:bg-warm-700 transition-colors">已結團（私訊我）</a>
           </div>
         )}
+        {product.deadline && !expired && (
+          <div className="absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-sm px-3 py-2">
+            <CountdownTimer deadline={product.deadline} />
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -81,13 +86,6 @@ export function ProductCard({ product, onClickTrack, index = 0 }: Props) {
                 <Tag className="w-2.5 h-2.5 mr-0.5" />{tag}
               </span>
             ))}
-          </div>
-        )}
-
-        {/* Countdown */}
-        {product.deadline && !expired && (
-          <div className="mt-2">
-            <CountdownTimer deadline={product.deadline} />
           </div>
         )}
 
