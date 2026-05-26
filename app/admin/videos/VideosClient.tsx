@@ -24,7 +24,6 @@ const emptyForm: FormData = {
   is_pinned: false,
   is_published: true,
   sort_order: 0,
-}
 
 export function VideosClient({ initialVideos }: Props) {
   const [videos, setVideos] = useState(initialVideos)
