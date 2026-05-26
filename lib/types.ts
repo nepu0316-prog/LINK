@@ -67,6 +67,7 @@ export type Video = {
   is_published: boolean
   click_count: number
   sort_order: number
+  category?: string
   created_at: string
   updated_at: string
 }
