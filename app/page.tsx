@@ -119,7 +119,7 @@ export default async function HomePage() {
               {active.length > 0 && (
                 <section>
                   <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2"><h2 className="section-title">現正開團</h2><span className="badge bg-coral-400 text-white text-xs animate-pulse">現正開團中</span></div>
+                    <div className="flex items-center gap-2"><h2 className="section-title">開團好物</h2><span className="badge bg-coral-400 text-white text-xs animate-pulse">現正開團中</span></div>
                     <span className="text-xs text-warm-400">{active.length} 個商品</span>
                   </div>
                   <div className="grid grid-cols-2 items-stretch gap-3">

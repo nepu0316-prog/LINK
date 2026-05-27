@@ -39,11 +39,9 @@ export function ProductCard({ product, onClickTrack, index = 0 }: Props) {
             🛍️
           </div>
         )}
-        {product.is_pinned && (
-          <span className="absolute top-2 left-2 badge bg-coral-400 text-white text-[10px]">
-            ✨ 精選
-          </span>
-        )}
+        <span className="absolute top-2 left-2 badge bg-black/40 backdrop-blur-sm text-white text-[10px]">
+          現正開團中
+        </span>
         {expired && (
           <div className="absolute inset-0 bg-warm-800/40 flex items-center justify-center">
             <a href="https://www.instagram.com/duliduli2023/" target="_blank" rel="noopener noreferrer" className="badge bg-warm-800 text-white hover:bg-warm-700 transition-colors">已結團（私訊我）</a>
