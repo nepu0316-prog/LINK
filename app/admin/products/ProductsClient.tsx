@@ -254,8 +254,8 @@ export function ProductsClient({ initialProducts }: Props) {
             <label className="block text-xs font-medium text-warm-600 dark:text-warm-400 mb-1.5">開團開始日（可選）</label>
             <input
               type="datetime-local"
-              value={form.deadline ? new Date(form.deadline).toISOString().slice(0, 16) : ''}
-              onChange={e => setForm(f => ({ ...f, deadline: e.target.value ? new Date(e.target.value).toISOString() : null }))}
+              value={(form as any).start_date ? new Date((form as any).start_date).toISOString().slice(0, 16) : ''}
+              onChange={e => setForm(f => ({ ...f, start_date: e.target.value ? new Date(e.target.value).toISOString() : null }))}
           />
           </div>
           <div>
