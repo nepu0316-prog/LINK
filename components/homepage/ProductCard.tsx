@@ -39,9 +39,14 @@ export function ProductCard({ product, onClickTrack, index = 0 }: Props) {
             🛍️
           </div>
         )}
-        <span className="absolute top-2 left-2 badge bg-black/40 backdrop-blur-sm text-white text-[10px]">
-          現正開團中
-        </span>
+        {(() => {
+          const now = new Date()
+          const started = !(product as any).start_date || new Date((product as any).start_date) <= now
+          const notEnded = !product.deadline || new Date(product.deadline) > now
+          return started && notEnded ? (
+            <span className="absolute top-2 left-2 badge bg-black/40 backdrop-blur-sm text-white text-[10px]">現正開團中</span>
+          ) : null
+        })()}
         {expired && (
           <div className="absolute inset-0 bg-warm-800/50 flex items-center justify-center">
             <span className="text-white font-black text-lg">開團結束</span>

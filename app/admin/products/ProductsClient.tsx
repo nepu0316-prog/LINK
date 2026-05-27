@@ -263,6 +263,14 @@ export function ProductsClient({ initialProducts }: Props) {
               type="datetime-local"
               value={form.deadline ? new Date(form.deadline).toISOString().slice(0, 16) : ''}
               onChange={e => setForm(f => ({ ...f, deadline: e.target.value ? new Date(e.target.value).toISOString() : null }))}
+          />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-warm-600 dark:text-warm-400 mb-1.5">結束日期（可選）</label>
+            <input type="datetime-local"
+            value={(form as any).end_date ? new Date((form as any).end_date).toISOString().slice(0, 16) : ''}
+            onChange={e => setForm(f => ({ ...f, end_date: e.target.value ? new Date(e.target.value).toISOString() : null }))}
+            className="input-field"
               className="input-field"
             />
           </div>
