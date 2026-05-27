@@ -26,6 +26,7 @@ const emptyForm: FormData = {
   start_date: null,
   end_date: null,
   deadline: null,
+  tags: [],
   is_pinned: false,
   is_published: true,
   sort_order: 0,
