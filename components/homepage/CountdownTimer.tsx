@@ -44,6 +44,7 @@ export function CountdownTimer({ deadline }: Props) {
           <span className="opacity-70">{label}</span>
         </span>
       ))}
+      <span className="font-black tracking-wide">開團</span>
     </div>
   )
 }
