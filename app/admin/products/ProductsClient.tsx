@@ -113,11 +113,7 @@ export function ProductsClient({ initialProducts }: Props) {
     setProducts(prev => prev.map(p => p.id === id ? data : p))
   }
 
-  function addTag() {
-    if (t && !(form.tags || []).includes(t)) {
-      setForm(f => ({ ...f, tags: [...(f.tags || []), t] }))
-    }
-  }
+
 
   return (
     <>
