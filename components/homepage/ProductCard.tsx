@@ -99,7 +99,7 @@ export function ProductCard({ product, onClickTrack, index = 0 }: Props) {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => onClickTrack?.(product.id)}
-            className="mt-auto pt-5 w-full text-xs py-3 rounded-xl bg-sage-500 hover:bg-sage-600 text-white font-medium transition-all flex items-center justify-center gap-1.5"
+            className="mt-auto pt-5 w-full btn-primary text-xs py-2"
             style={{ display: 'flex' }}
           >
             <ExternalLink className="w-3.5 h-3.5" />
