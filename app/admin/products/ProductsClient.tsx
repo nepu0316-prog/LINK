@@ -37,14 +37,12 @@ export function ProductsClient({ initialProducts }: Props) {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [form, setForm] = useState<FormData>(emptyForm)
   const [saving, setSaving] = useState(false)
-  const [tagInput, setTagInput] = useState('')
 
   const supabase = createClient()
 
   function openCreate() {
     setForm(emptyForm)
     setEditingId(null)
-    setTagInput('')
     setModalOpen(true)
   }
 
@@ -65,7 +63,6 @@ export function ProductsClient({ initialProducts }: Props) {
       tags: product.tags || [],
     })
     setEditingId(product.id)
-    setTagInput('')
     setModalOpen(true)
   }
 
@@ -117,11 +114,9 @@ export function ProductsClient({ initialProducts }: Props) {
   }
 
   function addTag() {
-    const t = tagInput.trim()
     if (t && !(form.tags || []).includes(t)) {
       setForm(f => ({ ...f, tags: [...(f.tags || []), t] }))
     }
-    setTagInput('')
   }
 
   return (
@@ -274,22 +269,7 @@ export function ProductsClient({ initialProducts }: Props) {
             />
           </div>
 
-          {/* Tags */}
-          <div>
-            <label className="block text-xs font-medium text-warm-600 dark:text-warm-400 mb-1.5">標籤</label>
-            <div className="flex gap-2 mb-2 flex-wrap">
-              {(form.tags || []).map(tag => (
-                <span key={tag} className="badge bg-cream-200 dark:bg-warm-700 text-warm-600 dark:text-warm-300 gap-1">
-                  {tag}
-                  <button type="button" onClick={() => setForm(f => ({ ...f, tags: (f.tags || []).filter(t => t !== tag) }))} className="text-warm-400 hover:text-red-400">×</button>
-                </span>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <input value={tagInput} onChange={e => setTagInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag())} placeholder="新增標籤後按 Enter" className="input-field flex-1" />
-              <button type="button" onClick={addTag} className="btn-secondary px-3 py-2 text-xs">新增</button>
-            </div>
-          </div>
+          
 
           {/* Toggles */}
           <div className="flex items-center gap-6 pt-2 border-t border-cream-200 dark:border-warm-700">
