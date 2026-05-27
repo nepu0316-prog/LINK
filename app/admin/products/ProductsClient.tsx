@@ -24,11 +24,11 @@ const emptyForm: FormData = {
   price: '',
   original_price: '',
   start_date: null,
+  end_date: null,
   deadline: null,
   is_pinned: false,
   is_published: true,
   sort_order: 0,
-  tags: [],
 }
 
 export function ProductsClient({ initialProducts }: Props) {
@@ -56,6 +56,7 @@ export function ProductsClient({ initialProducts }: Props) {
       price: product.price || '',
       original_price: product.original_price || '',
       start_date: (product as any).start_date || null,
+      end_date: (product as any).end_date || null,
       deadline: product.deadline,
       is_pinned: product.is_pinned,
       is_published: product.is_published,

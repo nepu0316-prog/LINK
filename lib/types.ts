@@ -47,6 +47,7 @@ export type Product = {
   price: string | null
   original_price: string | null
   start_date: string | null
+  end_date: string | null
   deadline: string | null
   is_pinned: boolean
   is_published: boolean
