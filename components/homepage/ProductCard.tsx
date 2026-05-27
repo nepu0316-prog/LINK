@@ -61,7 +61,7 @@ export function ProductCard({ product, onClickTrack, index = 0 }: Props) {
         </h3>
 
         {product.description && (
-          <p className="text-xs text-warm-500 dark:text-warm-300 mt-1.5 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-warm-500 dark:text-warm-300 mt-0.5 line-clamp-2 leading-snug">
             {product.description}
           </p>
         )}
