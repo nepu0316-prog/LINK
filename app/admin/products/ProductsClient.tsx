@@ -271,7 +271,6 @@ export function ProductsClient({ initialProducts }: Props) {
             value={(form as any).end_date ? new Date((form as any).end_date).toISOString().slice(0, 16) : ''}
             onChange={e => setForm(f => ({ ...f, end_date: e.target.value ? new Date(e.target.value).toISOString() : null }))}
             className="input-field"
-              className="input-field"
             />
           </div>
 
