@@ -256,7 +256,8 @@ export function ProductsClient({ initialProducts }: Props) {
               type="datetime-local"
               value={(form as any).start_date ? new Date((form as any).start_date).toISOString().slice(0, 16) : ''}
               onChange={e => setForm(f => ({ ...f, start_date: e.target.value ? new Date(e.target.value).toISOString() : null }))}
-          />
+              className="input-field"
+            />
           </div>
           <div>
             <label className="block text-xs font-medium text-warm-600 dark:text-warm-400 mb-1.5">結束日期（可選）</label>
