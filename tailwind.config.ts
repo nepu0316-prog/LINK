@@ -11,7 +11,7 @@ const config: Config = {
     extend: {
       colors: {
         cream: {
-          50: '#FDFAF7',
+          50: '#E5D7C4',
           100: '#FAF4EC',
           200: '#F5E6D3',
           300: '#EDD5B8',
@@ -44,7 +44,7 @@ const config: Config = {
           500: '#8C6355',
           600: '#6B4C3B',
           700: '#4A3028',
-          800: '#3D2B1F',
+          800: '#4C3D19',
           900: '#2D1E14',
         },
         sand: {
@@ -94,7 +94,7 @@ const config: Config = {
       },
       backgroundImage: {
         'dots-pattern': "radial-gradient(circle, #E8D5C9 1px, transparent 1px)",
-        'warm-gradient': 'linear-gradient(135deg, #FDFAF7 0%, #FAF4EC 50%, #F5E6D3 100%)',
+        'warm-gradient': 'linear-gradient(135deg, #E5D7C4 0%, #FAF4EC 50%, #F5E6D3 100%)',
         'coral-gradient': 'linear-gradient(135deg, #FAE4DF 0%, #F4C5BB 100%)',
         'sage-gradient': 'linear-gradient(135deg, #D4EAE4 0%, #A8D5CA 100%)',
       },
