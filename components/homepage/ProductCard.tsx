@@ -60,7 +60,7 @@ export function ProductCard({ product, onClickTrack, index = 0 }: Props) {
       </div>
 
       {/* Content */}
-      <div className="p-4 flex flex-col flex-1">
+      <div className="p-4 flex flex-col flex-1 gap-2">
         <h3 className="font-bold text-warm-800 dark:text-cream-100 text-sm leading-snug line-clamp-2">
           {product.title}
         </h3>
@@ -99,7 +99,7 @@ export function ProductCard({ product, onClickTrack, index = 0 }: Props) {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => onClickTrack?.(product.id)}
-            className="mt-auto w-full btn-primary text-xs py-3 text-center flex items-center justify-center gap-1.5 mt-8"
+            className="mt-auto w-full btn-primary text-xs py-3 text-center flex items-center justify-center gap-1.5"
             style={{ display: 'flex' }}
           >
             <ExternalLink className="w-3.5 h-3.5" />
