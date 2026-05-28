@@ -37,6 +37,9 @@ async function getData() {
   }
 }
 
+// 墨綠色主題色
+const PAGE_BG = '#1B3A2E'
+
 export default async function HomePage() {
   const { profile, banners, products, videos, links } = await getData()
 
@@ -80,10 +83,13 @@ export default async function HomePage() {
     ? activeProfile.instagram_url.replace(/.*instagram\.com\/@?/, '').replace(/\/$/, '')
     : undefined
 
+  // 區塊標題（墨綠背景上的暖米色）
+  const ST = 'text-xl font-bold flex items-center gap-2 text-[#E8DCC8]'
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ backgroundColor: PAGE_BG }}>
       {/* ── Hero：Banner 封面 + 頭像（無縫融合） ── */}
-      <ProfileHero profile={activeProfile} coverBanner={coverBanner} />
+      <ProfileHero profile={activeProfile} coverBanner={coverBanner} pageBg={PAGE_BG} />
 
       <div className="relative z-10 max-w-lg mx-auto px-4 pb-16">
 
@@ -91,7 +97,7 @@ export default async function HomePage() {
         {videos.length > 0 && (
           <section className="mt-6">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="section-title">跟著嘟力玩</h2>
+              <h2 className={ST}>跟著嘟力玩</h2>
             </div>
             <VideosSection videos={videos} />
           </section>
@@ -102,10 +108,10 @@ export default async function HomePage() {
           <section className="mt-8">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <h2 className="section-title">開團好物</h2>
-                <span className="badge bg-coral-400 text-white text-xs animate-pulse">現正開團中</span>
+                <h2 className={ST}>開團好物</h2>
+                <span className="badge bg-[#E8610A] text-white text-xs animate-pulse">現正開團中</span>
               </div>
-              <span className="text-xs text-warm-400">{activeProducts.length} 個商品</span>
+              <span className="text-xs text-[#7BA896]">{activeProducts.length} 個商品</span>
             </div>
             <div className="grid grid-cols-2 items-stretch gap-3">
               {activeProducts.map((product, i) => (
@@ -121,8 +127,13 @@ export default async function HomePage() {
         {upcomingProducts.length > 0 && (
           <section className="mt-8">
             <div className="flex items-center gap-2 mb-3">
-              <h2 className="section-title">即將開團</h2>
-              <span className="badge bg-sage-200 text-sage-700 dark:bg-sage-800 dark:text-sage-200 text-xs">敬請期待</span>
+              <h2 className={ST}>即將開團</h2>
+              <span
+                className="badge text-xs"
+                style={{ background: 'rgba(168,184,136,0.15)', color: '#A8B888', border: '1px solid rgba(168,184,136,0.35)' }}
+              >
+                敬請期待
+              </span>
             </div>
             <div className="grid grid-cols-2 items-stretch gap-3">
               {upcomingProducts.map((product, i) => (
@@ -135,8 +146,8 @@ export default async function HomePage() {
         {/* ── 已結團（較低調） ── */}
         {expiredProducts.length > 0 && (
           <section className="mt-8">
-            <h2 className="section-title mb-3 opacity-60">已結團</h2>
-            <div className="grid grid-cols-2 items-stretch gap-3 opacity-60">
+            <h2 className={`${ST} mb-3 opacity-40`}>已結團</h2>
+            <div className="grid grid-cols-2 items-stretch gap-3 opacity-50">
               {expiredProducts.map((product, i) => (
                 <ClickTracker key={product.id} itemType="product" itemId={product.id}>
                   <ProductCard product={product} index={i} />
@@ -149,9 +160,7 @@ export default async function HomePage() {
         {/* ── 更多連結 ── */}
         {links.length > 0 && (
           <section className="mt-8">
-            <h2 className="section-title mb-4">
-              更多連結
-            </h2>
+            <h2 className={`${ST} mb-4`}>更多連結</h2>
             <div className="space-y-2.5">
               {links.map((link, i) => (
                 <ClickTracker key={link.id} itemType="link" itemId={link.id}>
@@ -176,9 +185,12 @@ export default async function HomePage() {
             href="https://duliduli-website.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full py-4 rounded-xl
-              border-2 border-warm-300 bg-transparent hover:bg-gray-100
-              text-warm-800 font-bold text-base transition-all shadow-soft hover:shadow-hover"
+            className="flex items-center justify-center gap-2 w-full py-4 rounded-xl font-bold text-base transition-all"
+            style={{
+              border: '1.5px solid rgba(232,220,200,0.22)',
+              background: 'rgba(255,255,255,0.07)',
+              color: '#E8DCC8',
+            }}
           >
             🌐 嘟力日記官網
           </a>
@@ -186,24 +198,27 @@ export default async function HomePage() {
             href="http://surl.li/xvljif"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center justify-center gap-1 w-full py-4 rounded-xl
-              border-2 border-warm-300 bg-transparent hover:bg-gray-100
-              text-warm-800 font-bold text-base transition-all shadow-soft hover:shadow-hover"
+            className="flex flex-col items-center justify-center gap-1 w-full py-4 rounded-xl font-bold text-base transition-all"
+            style={{
+              border: '1.5px solid rgba(232,220,200,0.22)',
+              background: 'rgba(255,255,255,0.07)',
+              color: '#E8DCC8',
+            }}
           >
             <span className="flex items-center gap-2">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-green-500">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-green-400">
                 <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.07 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
               </svg>
               加入 LINE 社群
             </span>
-            <span className="text-xs font-normal text-warm-400">驗證密碼：0222</span>
+            <span className="text-xs font-normal" style={{ color: '#7BA896' }}>驗證密碼：0222</span>
           </a>
         </section>
 
         {/* ── Footer ── */}
-        <footer className="mt-10 text-center text-xs text-warm-300 dark:text-warm-600">
+        <footer className="mt-10 text-center text-xs" style={{ color: '#3A6B57' }}>
           <p>© {new Date().getFullYear()} {activeProfile.name}</p>
-          <p className="mt-1 opacity-60">Made with 🧡 Duli</p>
+          <p className="mt-1 opacity-70">Made with 🧡 Duli</p>
         </footer>
       </div>
     </div>

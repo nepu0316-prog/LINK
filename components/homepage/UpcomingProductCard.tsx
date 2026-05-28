@@ -16,6 +16,21 @@ function getDaysUntil(dateStr: string) {
   return Math.ceil((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 }
 
+function buildCalendarUrl(product: Product, startDateStr: string) {
+  // Format YYYYMMDD for Google Calendar all-day event
+  const start = new Date(startDateStr)
+  const end = new Date(start)
+  end.setDate(end.getDate() + 1)
+  const fmt = (d: Date) =>
+    `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`
+  const title = encodeURIComponent(`🛍️ ${product.title} 開團了！`)
+  const details = encodeURIComponent(
+    [product.description, product.url ? `購買連結：${product.url}` : '']
+      .filter(Boolean).join('\n')
+  )
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${fmt(start)}/${fmt(end)}&details=${details}`
+}
+
 export function UpcomingProductCard({ product, index = 0 }: Props) {
   const startDate = (product as { start_date?: string | null }).start_date
   const daysLeft = startDate ? getDaysUntil(startDate) : null
@@ -83,12 +98,26 @@ export function UpcomingProductCard({ product, index = 0 }: Props) {
           </div>
         )}
 
-        {/* Notify button */}
-        <div className="mt-3 w-full flex items-center justify-center gap-1.5 py-2 rounded-xl
-          bg-sage-50 dark:bg-sage-900/20 border border-sage-200 dark:border-sage-700
-          text-sage-600 dark:text-sage-400 text-xs font-medium">
-          🔔 開團時通知我
-        </div>
+        {/* Notify button → Google Calendar */}
+        {startDate ? (
+          <a
+            href={buildCalendarUrl(product, startDate)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 w-full flex items-center justify-center gap-1.5 py-2 rounded-xl
+              bg-sage-50 dark:bg-sage-900/20 border border-sage-200 dark:border-sage-700
+              text-sage-600 dark:text-sage-400 text-xs font-medium
+              hover:bg-sage-100 hover:border-sage-300 transition-colors"
+          >
+            🔔 開團時通知我
+          </a>
+        ) : (
+          <div className="mt-3 w-full flex items-center justify-center gap-1.5 py-2 rounded-xl
+            bg-sage-50 dark:bg-sage-900/20 border border-sage-200 dark:border-sage-700
+            text-sage-600 dark:text-sage-400 text-xs font-medium">
+            🔔 開團時通知我
+          </div>
+        )}
       </div>
     </motion.div>
   )
