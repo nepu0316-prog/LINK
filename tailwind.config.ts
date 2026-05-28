@@ -58,9 +58,9 @@ const config: Config = {
         display: ['var(--font-nunito)', 'Nunito', 'sans-serif'],
       },
       borderRadius: {
-        '2xl': '1rem',
-        '3xl': '1.5rem',
-        '4xl': '2rem',
+        '2xl': '0.6rem',
+        '3xl': '0.8rem',
+        '4xl': '1rem',
       },
       boxShadow: {
         soft: '0 2px 15px -3px rgba(109, 76, 59, 0.08), 0 4px 6px -4px rgba(109, 76, 59, 0.05)',
