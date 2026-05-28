@@ -61,6 +61,8 @@ CREATE TABLE IF NOT EXISTS products (
   button_text text NOT NULL DEFAULT '前往團購',
   price text,
   original_price text,
+  start_date timestamptz,
+  end_date timestamptz,
   deadline timestamptz,
   is_pinned boolean NOT NULL DEFAULT false,
   is_published boolean NOT NULL DEFAULT true,
