@@ -83,7 +83,7 @@ export function ProfileHero({ profile }: Props) {
         <div className="flex items-center gap-2">
           <SocialLinks profile={profile} />
           <a href="https://duliduli-website.com" target="_blank" rel="noopener noreferrer"
-            className="w-10 h-10 rounded-2xl bg-transparent hover:bg-gray-100 flex items-center justify-center transition-all duration-200 hover:scale-110 hover:-translate-y-0.5 text-warm-600"
+            className="w-10 h-10 rounded-2xl bg-warm-600 hover:bg-warm-700 flex items-center justify-center text-white shadow-soft transition-all duration-200 hover:scale-110 hover:-translate-y-0.5"
             aria-label="官網">
             🌐
           </a>
