@@ -65,19 +65,23 @@ export default async function HomePage() {
 
   // 分類商品
   const now = new Date()
+  // end_date（新欄位）與 deadline（舊欄位）二擇一，end_date 優先
+  const getEnd = (p: Product) => (p as any).end_date || p.deadline || null
+
   const activeProducts = products.filter(p => {
-    const started = !(p as { start_date?: string | null }).start_date ||
-      new Date((p as { start_date?: string | null }).start_date!) <= now
-    const notExpired = !p.deadline || new Date(p.deadline) > now
+    const started = !(p as any).start_date || new Date((p as any).start_date) <= now
+    const end = getEnd(p)
+    const notExpired = !end || new Date(end) > now
     return started && notExpired
   })
   const upcomingProducts = products.filter(p => {
-    const startDate = (p as { start_date?: string | null }).start_date
+    const startDate = (p as any).start_date
     return startDate && new Date(startDate) > now
   })
-  const expiredProducts = products.filter(p =>
-    p.deadline && new Date(p.deadline) <= now
-  )
+  const expiredProducts = products.filter(p => {
+    const end = getEnd(p)
+    return end && new Date(end) <= now
+  })
 
   const igHandle = activeProfile.instagram_url
     ? activeProfile.instagram_url.replace(/.*instagram\.com\/@?/, '').replace(/\/$/, '')

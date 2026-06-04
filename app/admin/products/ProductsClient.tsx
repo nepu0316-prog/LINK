@@ -74,11 +74,16 @@ export function ProductsClient({ initialProducts }: Props) {
       return
     }
     setSaving(true)
+    // 讓 end_date 與 deadline 保持同步：
+    // 後台用 end_date 欄位，前台 filter 也看 deadline，所以兩個都寫入。
+    const resolvedEnd = (form as any).end_date || form.deadline || null
     const payload = {
       ...form,
       description: form.description || null,
       price: form.price || null,
       original_price: form.original_price || null,
+      end_date: resolvedEnd,
+      deadline: resolvedEnd,   // 同步，確保前台 filter 正確
     }
     try {
       if (editingId) {
@@ -167,7 +172,14 @@ export function ProductsClient({ initialProducts }: Props) {
                     </p>
                     <div className="flex items-center gap-2 mt-1">
                       {p.price && <span className="text-xs text-coral-500 font-medium">{p.price}</span>}
-                      {p.deadline && <span className="text-xs text-warm-400">{new Date(p.deadline) > new Date() ? '🕐 倒數中' : '已截止'}</span>}
+                      {((p as any).end_date || p.deadline) && (() => {
+                        const endDate = new Date((p as any).end_date || p.deadline!)
+                        const started = !(p as any).start_date || new Date((p as any).start_date) <= new Date()
+                        if (!started) return <span className="text-xs text-blue-400">⏳ 即將開團</span>
+                        return endDate > new Date()
+                          ? <span className="text-xs text-warm-400">🕐 倒數中</span>
+                          : <span className="text-xs text-red-400">已截止</span>
+                      })()}
                       <span className="text-xs text-warm-300 truncate max-w-[120px]">{p.url}</span>
                     </div>
                   </div>
