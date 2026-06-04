@@ -52,11 +52,6 @@ export function ProductCard({ product, onClickTrack, index = 0 }: Props) {
             <span className="text-white font-black text-lg">開團結束</span>
           </div>
         )}
-        {product.deadline && !expired && (
-          <div className="absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-sm px-3 py-2">
-            <CountdownTimer deadline={product.deadline} />
-          </div>
-        )}
       </div>
 
       {/* Content */}
