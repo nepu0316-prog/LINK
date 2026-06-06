@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase-server'
 import { ShoppingBag, Video, Link2, Users, TrendingUp, Eye, MousePointerClick } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -23,36 +23,55 @@ async function getStats() {
   }
 }
 
-async function getProductClickStats() {
-  const supabase = await createServerSupabaseClient()
+// 使用 service role 讀取 click_analytics（anon key 無 SELECT 權限）
+async function getClickStats() {
+  const supabase = await createAdminSupabaseClient()
 
-  // 取所有產品點擊紀錄（item_type = 'product'）
+  // 取全部點擊紀錄（item_id + item_type）
   const { data: clicks } = await supabase
     .from('click_analytics')
-    .select('item_id')
-    .eq('item_type', 'product')
+    .select('item_id, item_type')
 
-  if (!clicks || clicks.length === 0) return []
+  if (!clicks || clicks.length === 0) return { products: [], links: [], total: 0 }
 
-  // 在 JS 端統計各商品點擊數
-  const clickMap: Record<string, number> = {}
+  // 各分類統計 map
+  const productMap: Record<string, number> = {}
+  const linkMap: Record<string, number> = {}
+
   for (const row of clicks) {
-    clickMap[row.item_id] = (clickMap[row.item_id] || 0) + 1
+    if (row.item_type === 'product') {
+      productMap[row.item_id] = (productMap[row.item_id] || 0) + 1
+    } else if (row.item_type === 'link') {
+      linkMap[row.item_id] = (linkMap[row.item_id] || 0) + 1
+    }
   }
 
-  // 取商品資訊（含縮圖）
-  const ids = Object.keys(clickMap)
-  const { data: products } = await supabase
-    .from('products')
-    .select('id, title, thumbnail_url, is_published')
-    .in('id', ids)
+  // 取商品資訊
+  const productIds = Object.keys(productMap)
+  const linkIds = Object.keys(linkMap)
 
-  if (!products) return []
+  const [productsRes, linksRes] = await Promise.all([
+    productIds.length > 0
+      ? supabase.from('products').select('id, title, thumbnail_url').in('id', productIds)
+      : { data: [] },
+    linkIds.length > 0
+      ? supabase.from('links').select('id, title').in('id', linkIds)
+      : { data: [] },
+  ])
 
-  // 合併並排序（點擊數由高到低）
-  return products
-    .map(p => ({ ...p, clicks: clickMap[p.id] || 0 }))
+  const productStats = (productsRes.data || [])
+    .map(p => ({ ...p, clicks: productMap[p.id] || 0 }))
     .sort((a, b) => b.clicks - a.clicks)
+
+  const linkStats = (linksRes.data || [])
+    .map(l => ({ ...l, clicks: linkMap[l.id] || 0 }))
+    .sort((a, b) => b.clicks - a.clicks)
+
+  return {
+    products: productStats,
+    links: linkStats,
+    total: clicks.length,
+  }
 }
 
 const statCards = [
@@ -62,10 +81,77 @@ const statCards = [
   { key: 'subscribers', label: '電子報訂閱', icon: Users, color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-500', href: '#' },
 ] as const
 
+// 共用排行列表
+function ClickRankList({
+  items,
+  maxClicks,
+  emptyLabel,
+}: {
+  items: { id: string; title: string; clicks: number; thumbnail_url?: string | null }[]
+  maxClicks: number
+  emptyLabel: string
+}) {
+  if (items.length === 0) {
+    return (
+      <div className="text-center py-6">
+        <MousePointerClick className="w-8 h-8 text-warm-200 mx-auto mb-2" />
+        <p className="text-xs text-warm-400">{emptyLabel}</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-3">
+      {items.map((item, i) => (
+        <div key={item.id} className="flex items-center gap-3">
+          {/* 排名 */}
+          <span
+            className="flex-shrink-0 w-5 text-center text-xs font-bold tabular-nums"
+            style={{ color: i === 0 ? '#E8610A' : i === 1 ? '#8A7050' : i === 2 ? '#9CA3AF' : '#C4B0A0' }}
+          >
+            {i + 1}
+          </span>
+
+          {/* 縮圖（商品才有） */}
+          {'thumbnail_url' in item && (
+            <div className="flex-shrink-0 w-8 h-8 rounded-lg overflow-hidden bg-cream-100 dark:bg-warm-700">
+              {item.thumbnail_url ? (
+                <Image src={item.thumbnail_url} alt={item.title} width={32} height={32} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-sm">🛍️</div>
+              )}
+            </div>
+          )}
+
+          {/* 名稱 + 進度條 */}
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-warm-700 dark:text-warm-200 truncate">{item.title}</p>
+            <div className="mt-1 h-1.5 bg-cream-200 dark:bg-warm-700 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-700"
+                style={{
+                  width: `${maxClicks > 0 ? (item.clicks / maxClicks) * 100 : 0}%`,
+                  background: i === 0 ? '#E8610A' : '#A8B888',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* 點擊數 */}
+          <span className="flex-shrink-0 text-sm font-bold text-warm-700 dark:text-warm-200 tabular-nums">
+            {item.clicks.toLocaleString()}
+          </span>
+          <span className="flex-shrink-0 text-xs text-warm-400">次</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default async function AdminDashboard() {
-  const [stats, productClicks] = await Promise.all([getStats(), getProductClickStats()])
-  const maxClicks = productClicks[0]?.clicks || 1
-  const totalClicks = productClicks.reduce((s, p) => s + p.clicks, 0)
+  const [stats, clickStats] = await Promise.all([getStats(), getClickStats()])
+  const maxProductClicks = clickStats.products[0]?.clicks || 1
+  const maxLinkClicks = clickStats.links[0]?.clicks || 1
 
   return (
     <div className="space-y-6">
@@ -83,97 +169,67 @@ export default async function AdminDashboard() {
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {statCards.map(({ key, label, icon: Icon, color, href }) => (
-          <Link
-            key={key}
-            href={href}
-            className="card-soft p-4 hover:shadow-hover transition-all group"
-          >
+          <Link key={key} href={href} className="card-soft p-4 hover:shadow-hover transition-all group">
             <div className={`w-10 h-10 rounded-xl ${color} flex items-center justify-center mb-3`}>
               <Icon className="w-5 h-5" />
             </div>
-            <p className="text-2xl font-bold text-warm-800 dark:text-cream-100">
-              {stats[key]}
-            </p>
+            <p className="text-2xl font-bold text-warm-800 dark:text-cream-100">{stats[key]}</p>
             <p className="text-xs text-warm-400 mt-0.5">{label}</p>
           </Link>
         ))}
       </div>
 
-      {/* ── 各商品點擊統計 ── */}
-      <div className="card-soft p-5">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-              <TrendingUp className="w-4.5 h-4.5 text-amber-500" />
+      {/* ── 點擊統計（商品 + 連結並排） ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* 商品點擊排行 */}
+        <div className="card-soft p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                <TrendingUp className="w-4 h-4 text-amber-500" />
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-warm-700 dark:text-warm-200">商品點擊排行</h2>
+                <p className="text-xs text-warm-400">
+                  共 {clickStats.products.reduce((s, p) => s + p.clicks, 0).toLocaleString()} 次
+                </p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-sm font-semibold text-warm-700 dark:text-warm-200">商品點擊排行</h2>
-              <p className="text-xs text-warm-400">共 {totalClicks.toLocaleString()} 次點擊</p>
-            </div>
+            <Link href="/admin/products" className="text-xs text-warm-400 hover:text-warm-600 transition-colors">
+              管理 →
+            </Link>
           </div>
-          <Link href="/admin/products" className="text-xs text-warm-400 hover:text-warm-600 transition-colors">
-            管理商品 →
-          </Link>
+          <ClickRankList
+            items={clickStats.products}
+            maxClicks={maxProductClicks}
+            emptyLabel="尚無商品點擊紀錄"
+          />
         </div>
 
-        {productClicks.length === 0 ? (
-          <div className="text-center py-8">
-            <MousePointerClick className="w-10 h-10 text-warm-200 mx-auto mb-2" />
-            <p className="text-sm text-warm-400">還沒有點擊紀錄</p>
-            <p className="text-xs text-warm-300 mt-1">訪客點擊商品連結後會顯示在這裡</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {productClicks.map((product, i) => (
-              <div key={product.id} className="flex items-center gap-3">
-                {/* 排名 */}
-                <span
-                  className="flex-shrink-0 w-6 text-center text-xs font-bold"
-                  style={{ color: i === 0 ? '#E8610A' : i === 1 ? '#8A7050' : i === 2 ? '#9CA3AF' : '#C4B0A0' }}
-                >
-                  {i + 1}
-                </span>
-
-                {/* 縮圖 */}
-                <div className="flex-shrink-0 w-9 h-9 rounded-xl overflow-hidden bg-cream-100 dark:bg-warm-700">
-                  {product.thumbnail_url ? (
-                    <Image
-                      src={product.thumbnail_url}
-                      alt={product.title}
-                      width={36}
-                      height={36}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-base">🛍️</div>
-                  )}
-                </div>
-
-                {/* 名稱 + 進度條 */}
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-warm-700 dark:text-warm-200 truncate">{product.title}</p>
-                  <div className="mt-1 flex items-center gap-2">
-                    <div className="flex-1 h-1.5 bg-cream-200 dark:bg-warm-700 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-700"
-                        style={{
-                          width: `${(product.clicks / maxClicks) * 100}%`,
-                          background: i === 0 ? '#E8610A' : '#A8B888',
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* 點擊數 */}
-                <span className="flex-shrink-0 text-sm font-bold text-warm-700 dark:text-warm-200 tabular-nums">
-                  {product.clicks.toLocaleString()}
-                </span>
-                <span className="flex-shrink-0 text-xs text-warm-400">次</span>
+        {/* 連結點擊排行 */}
+        <div className="card-soft p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-sage-100 dark:bg-sage-900/30 flex items-center justify-center">
+                <Link2 className="w-4 h-4 text-sage-500" />
               </div>
-            ))}
+              <div>
+                <h2 className="text-sm font-semibold text-warm-700 dark:text-warm-200">連結點擊排行</h2>
+                <p className="text-xs text-warm-400">
+                  共 {clickStats.links.reduce((s, l) => s + l.clicks, 0).toLocaleString()} 次
+                </p>
+              </div>
+            </div>
+            <Link href="/admin/links" className="text-xs text-warm-400 hover:text-warm-600 transition-colors">
+              管理 →
+            </Link>
           </div>
-        )}
+          <ClickRankList
+            items={clickStats.links}
+            maxClicks={maxLinkClicks}
+            emptyLabel="尚無連結點擊紀錄"
+          />
+        </div>
       </div>
 
       {/* Quick Links */}
