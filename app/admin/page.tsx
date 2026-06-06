@@ -1,16 +1,15 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
-import { ShoppingBag, Video, Link2, Image as ImageIcon, Users, TrendingUp, Eye } from 'lucide-react'
+import { ShoppingBag, Video, Link2, Users, TrendingUp, Eye, MousePointerClick } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 async function getStats() {
   const supabase = await createServerSupabaseClient()
-  const [products, videos, links, banners, subscribers, analytics] = await Promise.all([
+  const [products, videos, links, subscribers] = await Promise.all([
     supabase.from('products').select('id, is_published', { count: 'exact' }),
     supabase.from('videos').select('id, is_published', { count: 'exact' }),
     supabase.from('links').select('id, is_published', { count: 'exact' }),
-    supabase.from('banners').select('id', { count: 'exact' }),
     supabase.from('email_subscribers').select('id', { count: 'exact' }),
-    supabase.from('click_analytics').select('id', { count: 'exact' }),
   ])
 
   return {
@@ -20,20 +19,40 @@ async function getStats() {
     publishedVideos: (videos.data || []).filter(v => v.is_published).length,
     links: links.count || 0,
     publishedLinks: (links.data || []).filter(l => l.is_published).length,
-    banners: banners.count || 0,
     subscribers: subscribers.count || 0,
-    totalClicks: analytics.count || 0,
   }
 }
 
-async function getRecentActivity() {
+async function getProductClickStats() {
   const supabase = await createServerSupabaseClient()
-  const { data } = await supabase
+
+  // 取所有產品點擊紀錄（item_type = 'product'）
+  const { data: clicks } = await supabase
     .from('click_analytics')
-    .select('*')
-    .order('clicked_at', { ascending: false })
-    .limit(5)
-  return data || []
+    .select('item_id')
+    .eq('item_type', 'product')
+
+  if (!clicks || clicks.length === 0) return []
+
+  // 在 JS 端統計各商品點擊數
+  const clickMap: Record<string, number> = {}
+  for (const row of clicks) {
+    clickMap[row.item_id] = (clickMap[row.item_id] || 0) + 1
+  }
+
+  // 取商品資訊（含縮圖）
+  const ids = Object.keys(clickMap)
+  const { data: products } = await supabase
+    .from('products')
+    .select('id, title, thumbnail_url, is_published')
+    .in('id', ids)
+
+  if (!products) return []
+
+  // 合併並排序（點擊數由高到低）
+  return products
+    .map(p => ({ ...p, clicks: clickMap[p.id] || 0 }))
+    .sort((a, b) => b.clicks - a.clicks)
 }
 
 const statCards = [
@@ -44,7 +63,9 @@ const statCards = [
 ] as const
 
 export default async function AdminDashboard() {
-  const stats = await getStats()
+  const [stats, productClicks] = await Promise.all([getStats(), getProductClickStats()])
+  const maxClicks = productClicks[0]?.clicks || 1
+  const totalClicks = productClicks.reduce((s, p) => s + p.clicks, 0)
 
   return (
     <div className="space-y-6">
@@ -78,15 +99,81 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
-      {/* Total clicks */}
-      <div className="card-soft p-5 flex items-center gap-4">
-        <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-          <TrendingUp className="w-6 h-6 text-amber-500" />
+      {/* ── 各商品點擊統計 ── */}
+      <div className="card-soft p-5">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+              <TrendingUp className="w-4.5 h-4.5 text-amber-500" />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-warm-700 dark:text-warm-200">商品點擊排行</h2>
+              <p className="text-xs text-warm-400">共 {totalClicks.toLocaleString()} 次點擊</p>
+            </div>
+          </div>
+          <Link href="/admin/products" className="text-xs text-warm-400 hover:text-warm-600 transition-colors">
+            管理商品 →
+          </Link>
         </div>
-        <div>
-          <p className="text-3xl font-bold text-warm-800 dark:text-cream-100">{stats.totalClicks.toLocaleString()}</p>
-          <p className="text-sm text-warm-400">總點擊次數</p>
-        </div>
+
+        {productClicks.length === 0 ? (
+          <div className="text-center py-8">
+            <MousePointerClick className="w-10 h-10 text-warm-200 mx-auto mb-2" />
+            <p className="text-sm text-warm-400">還沒有點擊紀錄</p>
+            <p className="text-xs text-warm-300 mt-1">訪客點擊商品連結後會顯示在這裡</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {productClicks.map((product, i) => (
+              <div key={product.id} className="flex items-center gap-3">
+                {/* 排名 */}
+                <span
+                  className="flex-shrink-0 w-6 text-center text-xs font-bold"
+                  style={{ color: i === 0 ? '#E8610A' : i === 1 ? '#8A7050' : i === 2 ? '#9CA3AF' : '#C4B0A0' }}
+                >
+                  {i + 1}
+                </span>
+
+                {/* 縮圖 */}
+                <div className="flex-shrink-0 w-9 h-9 rounded-xl overflow-hidden bg-cream-100 dark:bg-warm-700">
+                  {product.thumbnail_url ? (
+                    <Image
+                      src={product.thumbnail_url}
+                      alt={product.title}
+                      width={36}
+                      height={36}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-base">🛍️</div>
+                  )}
+                </div>
+
+                {/* 名稱 + 進度條 */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium text-warm-700 dark:text-warm-200 truncate">{product.title}</p>
+                  <div className="mt-1 flex items-center gap-2">
+                    <div className="flex-1 h-1.5 bg-cream-200 dark:bg-warm-700 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-700"
+                        style={{
+                          width: `${(product.clicks / maxClicks) * 100}%`,
+                          background: i === 0 ? '#E8610A' : '#A8B888',
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 點擊數 */}
+                <span className="flex-shrink-0 text-sm font-bold text-warm-700 dark:text-warm-200 tabular-nums">
+                  {product.clicks.toLocaleString()}
+                </span>
+                <span className="flex-shrink-0 text-xs text-warm-400">次</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Quick Links */}
