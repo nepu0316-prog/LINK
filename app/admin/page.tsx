@@ -1,4 +1,5 @@
 import { createServerSupabaseClient, createAdminSupabaseClient } from '@/lib/supabase-server'
+import { EXTERNAL_LINK_LABELS } from '@/lib/external-link-ids'
 import { ShoppingBag, Video, Link2, Users, TrendingUp, Eye, MousePointerClick } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -63,8 +64,16 @@ async function getClickStats() {
     .map(p => ({ ...p, clicks: productMap[p.id] || 0 }))
     .sort((a, b) => b.clicks - a.clicks)
 
-  const linkStats = (linksRes.data || [])
-    .map(l => ({ ...l, clicks: linkMap[l.id] || 0 }))
+  // 資料庫裡的連結
+  const dbLinkStats = (linksRes.data || [])
+    .map(l => ({ id: l.id, title: l.title, clicks: linkMap[l.id] || 0 }))
+
+  // 硬寫在頁面的外部連結（LINE / 官網），用固定 UUID 識別
+  const externalStats = Object.entries(EXTERNAL_LINK_LABELS)
+    .filter(([id]) => linkMap[id])
+    .map(([id, title]) => ({ id, title, clicks: linkMap[id] }))
+
+  const linkStats = [...dbLinkStats, ...externalStats]
     .sort((a, b) => b.clicks - a.clicks)
 
   return {
